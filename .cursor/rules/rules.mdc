@@ -1,0 +1,133 @@
+---
+alwaysApply: true
+---
+
+# Reglas del Proyecto - Backend de Nutrición (NestJS)
+
+## Arquitectura y Estructura
+
+### Organización de Módulos
+
+- Cada feature: `{feature}.module.ts`, `{feature}.service.ts`, `{feature}.controller.ts`
+- Carpetas: `entities/`, `dto/`, `guards/` (si aplica)
+
+### Convenciones de Nombres
+
+- **Módulos**: PascalCase + `Module` (ej: `UsersModule`)
+- **Servicios**: PascalCase + `Service` (ej: `UsersService`)
+- **Controladores**: PascalCase + `Controller` (ej: `UsersController`)
+- **Entidades**: PascalCase singular (ej: `User`)
+- **DTOs**: PascalCase + sufijo descriptivo (ej: `CreateUserDto`, `UserResponseDto`)
+- **Enums**: PascalCase singular (ej: `Gender`, `Goal`)
+- **Guards**: PascalCase + `Guard` (ej: `JwtAuthGuard`)
+
+## TypeORM y Base de Datos
+
+### Entidades
+
+- `@Entity('nombre_tabla')` con snake_case
+- `@PrimaryGeneratedColumn('uuid')` para IDs
+- `@CreateDateColumn()` y `@UpdateDateColumn()` para timestamps
+- `@ApiProperty()` en todos los campos expuestos
+- Nunca exponer campos sensibles (como `password`) en DTOs
+
+### Migraciones
+
+- `npm run migration:generate -- src/database/migrations/NombreMigracion`
+- `npm run migration:run` / `migration:revert`
+- Nunca usar `synchronize: true` en producción
+
+## DTOs y Validación
+
+### DTOs de Request
+
+- Usar `class-validator`: `@IsEmail()`, `@IsString()`, `@IsNumber()`, `@IsEnum()`, `@IsOptional()`, `@MinLength()`, `@MaxLength()`
+- Todos los DTOs deben tener `@ApiProperty()` para Swagger
+
+### DTOs de Response
+
+- Crear DTOs separados para respuestas (ej: `UserResponseDto`)
+- Excluir siempre campos sensibles como `password`
+- Usar `class-transformer` si es necesario
+
+## Controladores y Endpoints
+
+### Decoradores Swagger
+
+- `@ApiTags('nombre-feature')` a nivel de clase
+- `@ApiOperation({ summary: 'Descripción' })` en cada método
+- `@ApiResponse()` para documentar respuestas
+- `@ApiBearerAuth('JWT-auth')` en endpoints protegidos
+
+### Autenticación
+
+- `@UseGuards(JwtAuthGuard)` en endpoints protegidos
+- Acceder al usuario con `@Request() req` y usar `req.user.sub` para el ID
+
+## Servicios
+
+### Inyección de Dependencias
+
+- Constructor injection siempre
+- Repositorios: `@InjectRepository(Entity)`
+- Otros servicios: inyección directa
+
+### Manejo de Errores
+
+- `NotFoundException` - Recurso no encontrado
+- `ConflictException` - Conflicto (ej: email duplicado)
+- `UnauthorizedException` - No autorizado
+- `BadRequestException` - Solicitud inválida
+- Nunca exponer detalles internos en mensajes de error
+
+## Seguridad
+
+### Contraseñas
+
+- Hashear con `bcrypt` antes de guardar
+- Verificar con `bcrypt.compare()`
+- Nunca retornar contraseñas en respuestas
+
+### JWT
+
+- Usar `JwtService` de `@nestjs/jwt`
+- Payload: `sub` (user ID) y `email`
+- Incluir en respuestas como `access_token`
+
+## Enums
+
+- Crear en `src/common/enums/`
+- Valores en snake_case (ej: `LOSE_WEIGHT`, `GAIN_MUSCLE`)
+- En entidades: `@Column({ type: 'enum', enum: EnumName, nullable: true })`
+- Documentar: `@ApiProperty({ enum: EnumName })`
+
+## Configuración
+
+- Variables de entorno: `@nestjs/config` con `ConfigModule.forRoot({ isGlobal: true })`
+- Configuraciones sensibles en `.env`
+- TypeORM en módulo separado (`DatabaseModule`)
+- Usar `DataSource` para migraciones
+- Nunca exponer credenciales en código
+
+## Gestión de Dependencias
+
+- **Usar `pnpm` para todas las instalaciones de librerías**
+- Comandos: `pnpm add <paquete>`, `pnpm add -D <paquete>`, `pnpm install`
+- Para scripts de migraciones, mantener `npm run` (ya configurados en package.json)
+
+## Código y Estilo
+
+- Tipos explícitos en funciones y métodos
+- Preferir `async/await` sobre `.then()`
+- Organizar imports: NestJS → librerías externas → módulos internos
+- Usar path aliases `@/*` cuando esté configurado
+- Documentar lógica compleja, evitar comentarios obvios
+
+## Mejores Prácticas
+
+1. **Separación de Responsabilidades**: Controllers = HTTP, Services = lógica de negocio
+2. **DRY**: No repetir código, extraer lógica común
+3. **Validación**: Siempre en DTOs, nunca confiar en datos del cliente
+4. **Documentación**: Mantener Swagger actualizado
+5. **Seguridad**: Nunca exponer información sensible, siempre validar autenticación
+6. **Performance**: Índices en campos de búsqueda frecuente, evitar N+1 queries
