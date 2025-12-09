@@ -26,12 +26,18 @@ async function bootstrap() {
     );
     console.log("✅ [DEBUG] Validation pipe configured");
 
+    const port = process.env.PORT || 3000;
+
     // Swagger configuration
     console.log("🔧 [DEBUG] Configuring Swagger...");
+    const apiUrl = process.env.API_URL || `http://localhost:${port}`;
+    console.log(`🔧 [DEBUG] API URL: ${apiUrl}`);
+
     const config = new DocumentBuilder()
       .setTitle("Nutrition API")
       .setDescription("Backend for nutrition tracking")
       .setVersion("1.0")
+      .addServer(apiUrl, "API Server")
       .addBearerAuth(
         {
           type: "http",
@@ -46,10 +52,14 @@ async function bootstrap() {
       .build();
 
     const document = SwaggerModule.createDocument(app, config);
-    SwaggerModule.setup("api/docs", app, document);
+    SwaggerModule.setup("api/docs", app, document, {
+      swaggerOptions: {
+        persistAuthorization: true,
+      },
+      customSiteTitle: "Nutrition API Documentation",
+    });
     console.log("✅ [DEBUG] Swagger configured");
-
-    const port = process.env.PORT || 3000;
+    console.log(`📚 [DEBUG] Swagger available at: ${apiUrl}/api/docs`);
     console.log(`🔧 [DEBUG] Attempting to listen on port ${port}...`);
     await app.listen(port);
     console.log(`✅ [DEBUG] Server is listening on port ${port}`);
