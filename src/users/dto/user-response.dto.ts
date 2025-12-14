@@ -1,15 +1,15 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { Gender } from '../../common/enums/gender.enum';
-import { Goal } from '../../common/enums/goal.enum';
+import { ApiProperty } from "@nestjs/swagger";
+import { Gender } from "../../common/enums/gender.enum";
+import { Goal } from "../../common/enums/goal.enum";
 
 export class UserResponseDto {
-  @ApiProperty({ example: '123e4567-e89b-12d3-a456-426614174000' })
-  id: string;
+  @ApiProperty({ example: 1 })
+  id: number;
 
-  @ApiProperty({ example: 'John Doe' })
+  @ApiProperty({ example: "John Doe" })
   name: string;
 
-  @ApiProperty({ example: 'john@example.com' })
+  @ApiProperty({ example: "john@example.com" })
   email: string;
 
   @ApiProperty({ example: 70.5, required: false, nullable: true })
@@ -33,4 +33,3 @@ export class UserResponseDto {
   @ApiProperty()
   updatedAt: Date;
 }
-

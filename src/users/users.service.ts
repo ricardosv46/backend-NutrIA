@@ -11,7 +11,7 @@ export class UsersService {
     private readonly userRepository: Repository<User>
   ) {}
 
-  async findOne(id: string): Promise<UserResponseDto> {
+  async findOne(id: number): Promise<UserResponseDto> {
     const user = await this.userRepository.findOne({ where: { id } });
     if (!user) {
       throw new NotFoundException("User not found");
@@ -31,10 +31,13 @@ export class UsersService {
     return userWithoutPassword;
   }
 
-  async update(id: string, updateData: Partial<User>): Promise<UserResponseDto> {
+  async update(
+    id: number,
+    updateData: Partial<User>
+  ): Promise<UserResponseDto> {
     const user = await this.userRepository.findOne({ where: { id } });
     if (!user) {
-      throw new NotFoundException('User not found');
+      throw new NotFoundException("User not found");
     }
 
     Object.assign(user, updateData);
@@ -43,10 +46,10 @@ export class UsersService {
     return userWithoutPassword;
   }
 
-  async remove(id: string): Promise<void> {
+  async remove(id: number): Promise<void> {
     const user = await this.userRepository.findOne({ where: { id } });
     if (!user) {
-      throw new NotFoundException('User not found');
+      throw new NotFoundException("User not found");
     }
 
     // Los planes semanales se eliminarán automáticamente por CASCADE

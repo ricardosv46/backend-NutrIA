@@ -4,22 +4,22 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
-} from 'typeorm';
-import { ApiProperty } from '@nestjs/swagger';
-import { Gender } from '../../common/enums/gender.enum';
-import { Goal } from '../../common/enums/goal.enum';
+} from "typeorm";
+import { ApiProperty } from "@nestjs/swagger";
+import { Gender } from "../../common/enums/gender.enum";
+import { Goal } from "../../common/enums/goal.enum";
 
-@Entity('users')
+@Entity("users")
 export class User {
-  @ApiProperty({ example: '123e4567-e89b-12d3-a456-426614174000' })
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
+  @ApiProperty({ example: 1 })
+  @PrimaryGeneratedColumn()
+  id: number;
 
-  @ApiProperty({ example: 'John Doe' })
+  @ApiProperty({ example: "John Doe" })
   @Column()
   name: string;
 
-  @ApiProperty({ example: 'john@example.com' })
+  @ApiProperty({ example: "john@example.com" })
   @Column({ unique: true })
   email: string;
 
@@ -27,11 +27,11 @@ export class User {
   password: string;
 
   @ApiProperty({ example: 70.5, required: false })
-  @Column({ type: 'decimal', precision: 5, scale: 2, nullable: true })
+  @Column({ type: "decimal", precision: 5, scale: 2, nullable: true })
   weight: number;
 
   @ApiProperty({ example: 175, required: false })
-  @Column({ type: 'decimal', precision: 5, scale: 2, nullable: true })
+  @Column({ type: "decimal", precision: 5, scale: 2, nullable: true })
   height: number;
 
   @ApiProperty({ example: 30, required: false })
@@ -40,14 +40,14 @@ export class User {
 
   @ApiProperty({ enum: Gender, required: false })
   @Column({
-    type: 'varchar',
+    type: "varchar",
     nullable: true,
   })
   gender: Gender;
 
   @ApiProperty({ enum: Goal, required: false })
   @Column({
-    type: 'varchar',
+    type: "varchar",
     nullable: true,
   })
   goal: Goal;
@@ -60,4 +60,3 @@ export class User {
   @UpdateDateColumn()
   updatedAt: Date;
 }
-

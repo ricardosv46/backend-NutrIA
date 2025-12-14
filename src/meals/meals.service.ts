@@ -132,7 +132,7 @@ export class MealsService {
     targets: MacroTargets,
     mealType: MealType,
     availableMeals: Meal[],
-    usedMealIds: Set<string>
+    usedMealIds: Set<number>
   ): Promise<Meal> {
     // Filtrar comidas por tipo y que no hayan sido usadas
     const candidateMeals = availableMeals.filter(
@@ -161,7 +161,7 @@ export class MealsService {
    * Genera un plan semanal para un usuario
    */
   async generateWeeklyPlan(
-    userId: string,
+    userId: number,
     weekStart?: Date
   ): Promise<WeeklyPlanResponseDto> {
     const user = await this.userRepository.findOne({ where: { id: userId } });
@@ -228,7 +228,7 @@ export class MealsService {
     const savedPlan = await this.weeklyPlanRepository.save(weeklyPlan);
 
     // Generar comidas para cada día
-    const usedMealIds = new Set<string>();
+    const usedMealIds = new Set<number>();
     const weeklyPlanMeals: WeeklyPlanMeal[] = [];
 
     for (const day of days) {
@@ -268,7 +268,7 @@ export class MealsService {
    * Obtiene el plan semanal existente o genera uno nuevo
    */
   async getWeeklyPlan(
-    userId: string,
+    userId: number,
     weekStart?: Date
   ): Promise<WeeklyPlanResponseDto> {
     const startDate = weekStart
@@ -295,7 +295,7 @@ export class MealsService {
    * Regenera un plan semanal (fuerza nueva generación)
    */
   async regenerateWeeklyPlan(
-    userId: string,
+    userId: number,
     weekStart?: Date
   ): Promise<WeeklyPlanResponseDto> {
     const startDate = weekStart
