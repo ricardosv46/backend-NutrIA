@@ -10,14 +10,15 @@ config();
 const AppDataSource = new DataSource({
   type: "postgres",
   host: process.env.DATABASE_HOST || "",
-  port: parseInt(process.env.DATABASE_PORT || ""),
+  port: Number.parseInt(process.env.DATABASE_PORT || "", 10),
   username: process.env.DATABASE_USER || "",
   password: process.env.DATABASE_PASSWORD || "",
   database: process.env.DATABASE_NAME || "",
   entities: [User, Meal, WeeklyPlan, WeeklyPlanMeal],
   migrations: ["src/database/migrations/*.ts"],
   synchronize: false,
-  ssl: true,
+  ssl:
+    process.env.DATABASE_SSL === "true" ? { rejectUnauthorized: false } : false,
 });
 
 export default AppDataSource;

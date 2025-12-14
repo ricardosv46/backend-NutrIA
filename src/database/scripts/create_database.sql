@@ -3,21 +3,21 @@
 -- Generado a partir de la migración TypeORM InitialSchema
 -- =====================================================
 
--- Crear la base de datos (ejecutar como superusuario si no existe)
--- CREATE DATABASE nutrition_db;
--- \c nutrition_db;
+-- Crear la base de datos (ejecutar primero como superusuario si no existe)
+-- Si ya estás conectado a la base de datos, omite estas líneas
+CREATE DATABASE nutrition_app;
 
 -- =====================================================
 -- 1. FUNCIÓN PARA ACTUALIZAR updatedAt AUTOMÁTICAMENTE
 -- =====================================================
 
 CREATE OR REPLACE FUNCTION update_updated_at_column()
-RETURNS TRIGGER AS $$
+RETURNS TRIGGER AS $BODY$
 BEGIN
   NEW."updatedAt" = CURRENT_TIMESTAMP;
   RETURN NEW;
 END;
-$$ language 'plpgsql';
+$BODY$ LANGUAGE plpgsql;
 
 -- =====================================================
 -- 2. TABLA: users
@@ -153,14 +153,3 @@ ALTER TABLE "weekly_plan_meals"
 -- =====================================================
 -- FIN DEL SCRIPT
 -- =====================================================
-
--- Verificar que todas las tablas se crearon correctamente
-SELECT 
-  table_name 
-FROM 
-  information_schema.tables 
-WHERE 
-  table_schema = 'public' 
-  AND table_name IN ('users', 'meals', 'weekly_plans', 'weekly_plan_meals')
-ORDER BY 
-  table_name;

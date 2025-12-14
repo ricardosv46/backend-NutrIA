@@ -26,7 +26,10 @@ import { WeeklyPlanMeal } from "../meals/entities/weekly-plan-meal.entity";
           retryAttempts: 3,
           retryDelay: 3000,
           logging: true,
-          ssl: true,
+          ssl:
+            configService.get("DATABASE_SSL") === "true"
+              ? { rejectUnauthorized: false }
+              : false,
         };
         console.log("🔍 [DEBUG] Database config:", {
           host: config.host,
